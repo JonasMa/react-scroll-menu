@@ -45,7 +45,6 @@ export const Menu = ({
     if (visibleSections.length === 0) return;
     // TODO: This is a hack to have 'about' selected when in doubt
     const bestVisibility = visibleSections.sort()[0];
-    // publish active id on output
     onItemActive?.(bestVisibility);
   }, [visibleSections]);
 
@@ -62,19 +61,25 @@ export const Menu = ({
     const observer = new IntersectionObserver(callback, observerOptions);
     React.Children.forEach(children, (child) => {
       if (!React.isValidElement<MenuItemProps>(child)) return;
-      child.props.onClick = (sectionId: string) => {
-        setVisibleSections([sectionId]);
-      };
 
       const { sectionId } = child.props;
       // get child MenuItems
       const section = document.getElementById(sectionId);
       if (!section) {
-        // throw new Error(`No section found with id ${sectionId}`);
+        console.error(`No section found with id ${sectionId}`);
         return;
       }
       observer.observe(section);
     });
   }, []);
-  return React.createElement(as, { className }, children);
+
+  const childrenWithClickListener = React.Children.map(children, (child) => {
+    if (React.isValidElement<MenuItemProps>(child)) {
+      return React.cloneElement(child, {
+        onItemClick: () => onItemActive?.(child.props.sectionId),
+      });
+    }
+    return child;
+  });
+  return React.createElement(as, { className }, childrenWithClickListener);
 };
