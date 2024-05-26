@@ -8,7 +8,6 @@ export interface MenuItemProps {
   className?: string;
 }
 
-// TODO: get click events and scroll to element
 export const MenuItem: React.FC<MenuItemProps> = ({
   children,
   onItemClick,
