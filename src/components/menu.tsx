@@ -23,32 +23,43 @@ export const Menu = ({
   as = "ul",
   className,
 }: MenuProps) => {
-
   const observerOptions: IntersectionObserverInit = {
     root,
     ...defaultOptions,
     ...options,
   };
 
-  const [visibleSections, setVisibleSections] = React.useState<string[]>([]);
+  const [visibleSections, setVisibleSections] = React.useState<Set<string>>([]);
   const [allSections, setAllSections] = React.useState<string[]>([]);
 
   const updateSections = (add: string[], remove: string[]) => {
-    setVisibleSections(sections => [...sections, ...add].filter(s => !remove.includes(s)));
-  }
+    setVisibleSections((sections) => {
+      add.forEach(sections.add);
+      remove.forEach(sections.delete);
+      return sections;
+    });
+  };
 
   React.useEffect(() => {
-    if (visibleSections.length === 0) return;
-    // TODO: convert visibleSections to Set to improve performance ???
-    const visibleSectionsOrdered = allSections.filter(section => visibleSections.includes(section));
+    if (visibleSections.size === 0) return;
+    const visibleSectionsOrdered = allSections.filter((section) =>
+      visibleSections.has(section)
+    );
     onItemActive?.(visibleSectionsOrdered[0]);
   }, [visibleSections, allSections]);
 
-  const callback: IntersectionObserverCallback = React.useCallback((entries) => {
-    const intersectingIds =  entries.filter(e => e.isIntersecting).map(e => e.target.id);
-    const notIntersectingIds =  entries.filter(e => !e.isIntersecting).map(e => e.target.id);
-    updateSections(intersectingIds, notIntersectingIds);
-  },[]);
+  const callback: IntersectionObserverCallback = React.useCallback(
+    (entries) => {
+      const intersectingIds = entries
+        .filter((e) => e.isIntersecting)
+        .map((e) => e.target.id);
+      const notIntersectingIds = entries
+        .filter((e) => !e.isIntersecting)
+        .map((e) => e.target.id);
+      updateSections(intersectingIds, notIntersectingIds);
+    },
+    []
+  );
 
   React.useEffect(() => {
     const observer = new IntersectionObserver(callback, observerOptions);
@@ -68,7 +79,7 @@ export const Menu = ({
     setAllSections(sections);
   }, [callback]);
 
-  const onItemClick = React.useCallback((sectionId: string) =>{
+  const onItemClick = React.useCallback((sectionId: string) => {
     onItemActive?.(sectionId);
     const section = document.getElementById(sectionId);
     if (!section) {
@@ -76,7 +87,7 @@ export const Menu = ({
       return;
     }
     const top = section.offsetTop - 64;
-    window.scrollTo({ top, behavior: 'smooth' });
+    window.scrollTo({ top, behavior: "smooth" });
   }, []);
 
   const childrenWithClickListener = React.Children.map(children, (child) => {
