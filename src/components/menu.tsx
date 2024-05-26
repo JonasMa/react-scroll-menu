@@ -69,9 +69,8 @@ export const Menu = ({
 
       const { sectionId } = child.props;
       sections.push(sectionId);
-      const section = document.getElementById(sectionId);
+      const section = getSectionWithError(sectionId);
       if (!section) {
-        console.error(`No section found with id ${sectionId}`);
         return;
       }
       observer.observe(section);
@@ -81,9 +80,8 @@ export const Menu = ({
 
   const onItemClick = React.useCallback((sectionId: string) => {
     onItemActive?.(sectionId);
-    const section = document.getElementById(sectionId);
+    const section = getSectionWithError(sectionId);
     if (!section) {
-      console.error(`No section found with id ${sectionId}`);
       return;
     }
     const top = section.offsetTop - 64;
@@ -100,3 +98,11 @@ export const Menu = ({
   });
   return React.createElement(as, { className }, childrenWithClickListener);
 };
+
+function getSectionWithError(sectionId: string): HTMLElement | null {
+  const section = document.getElementById(sectionId);
+  if (!section) {
+    console.error(`No section found with id ${sectionId}`);
+  }
+  return section;
+}
