@@ -13,6 +13,8 @@ export interface MenuProps {
   as?: keyof JSX.IntrinsicElements;
   className?: string;
   onItemActive?: (sectionId: string) => void;
+  // Padding is added on top of elements when scrolling to them. Defauults to 64
+  paddingTop?: number;
 }
 
 export const Menu = ({
@@ -22,6 +24,7 @@ export const Menu = ({
   onItemActive,
   as = "ul",
   className,
+  paddingTop = 64,
 }: MenuProps) => {
   const observerOptions: IntersectionObserverInit = {
     root,
@@ -66,7 +69,7 @@ export const Menu = ({
       observerOptions
     );
     const sectionIds: string[] = [];
-    
+
     React.Children.forEach(children, (child) => {
       if (!React.isValidElement<MenuItemProps>(child)) return;
 
@@ -79,6 +82,8 @@ export const Menu = ({
       observer.observe(section);
     });
     setAllSections(sectionIds);
+
+    return () => {};
   }, [updateVisibleSections]);
 
   const onItemClick = React.useCallback((sectionId: string) => {
@@ -87,7 +92,7 @@ export const Menu = ({
     if (!section) {
       return;
     }
-    const top = section.offsetTop - 64;
+    const top = section.offsetTop - paddingTop;
     window.scrollTo({ top, behavior: "smooth" });
   }, []);
 
