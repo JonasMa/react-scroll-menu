@@ -29,14 +29,15 @@ export const Menu = ({
     ...options,
   };
 
-  const [visibleSections, setVisibleSections] = React.useState<Set<string>>([]);
+  const [visibleSections, setVisibleSections] = React.useState<Set<string>>(new Set());
   const [allSections, setAllSections] = React.useState<string[]>([]);
 
   const updateSections = (add: string[], remove: string[]) => {
     setVisibleSections((sections) => {
-      add.forEach(sections.add);
-      remove.forEach(sections.delete);
-      return sections;
+      const newSections = new Set(sections);
+      add.forEach(item => newSections.add(item));
+      remove.forEach(item => newSections.delete(item));
+      return newSections;
     });
   };
 
@@ -51,11 +52,11 @@ export const Menu = ({
   const callback: IntersectionObserverCallback = React.useCallback(
     (entries) => {
       const intersectingIds = entries
-        .filter((e) => e.isIntersecting)
-        .map((e) => e.target.id);
+      .filter((e) => e.isIntersecting)
+      .map((e) => e.target.id);
       const notIntersectingIds = entries
-        .filter((e) => !e.isIntersecting)
-        .map((e) => e.target.id);
+      .filter((e) => !e.isIntersecting)
+      .map((e) => e.target.id);
       updateSections(intersectingIds, notIntersectingIds);
     },
     []
@@ -63,19 +64,19 @@ export const Menu = ({
 
   React.useEffect(() => {
     const observer = new IntersectionObserver(callback, observerOptions);
-    const sections: string[] = [];
+    const sectionIds: string[] = [];
     React.Children.forEach(children, (child) => {
       if (!React.isValidElement<MenuItemProps>(child)) return;
 
       const { sectionId } = child.props;
-      sections.push(sectionId);
+      sectionIds.push(sectionId);
       const section = getSectionWithError(sectionId);
       if (!section) {
         return;
       }
       observer.observe(section);
     });
-    setAllSections(sections);
+    setAllSections(sectionIds);
   }, [callback]);
 
   const onItemClick = React.useCallback((sectionId: string) => {
