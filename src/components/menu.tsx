@@ -3,7 +3,7 @@ import { MenuItemProps } from "./menuItem";
 
 const defaultOptions: IntersectionObserverInit = {
   threshold: 0,
-  rootMargin: "-15% 0px -55% 0px",
+  rootMargin: "-25% 0px -55% 0px",
 };
 
 export interface MenuProps {
@@ -29,17 +29,10 @@ export const Menu = ({
     ...options,
   };
 
-  const [visibleSections, setVisibleSections] = React.useState<Set<string>>(new Set());
+  const [visibleSections, setVisibleSections] = React.useState<Set<string>>(
+    new Set()
+  );
   const [allSections, setAllSections] = React.useState<string[]>([]);
-
-  const updateSections = (add: string[], remove: string[]) => {
-    setVisibleSections((sections) => {
-      const newSections = new Set(sections);
-      add.forEach(item => newSections.add(item));
-      remove.forEach(item => newSections.delete(item));
-      return newSections;
-    });
-  };
 
   React.useEffect(() => {
     if (visibleSections.size === 0) return;
@@ -49,22 +42,31 @@ export const Menu = ({
     onItemActive?.(visibleSectionsOrdered[0]);
   }, [visibleSections, allSections]);
 
-  const callback: IntersectionObserverCallback = React.useCallback(
+  const updateVisibleSections: IntersectionObserverCallback = React.useCallback(
     (entries) => {
-      const intersectingIds = entries
-      .filter((e) => e.isIntersecting)
-      .map((e) => e.target.id);
-      const notIntersectingIds = entries
-      .filter((e) => !e.isIntersecting)
-      .map((e) => e.target.id);
-      updateSections(intersectingIds, notIntersectingIds);
+      setVisibleSections((oldSections) => {
+        // Clone because state is immutable
+        const newSections = new Set(oldSections);
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            newSections.add(e.target.id);
+          } else {
+            newSections.delete(e.target.id);
+          }
+        });
+        return newSections;
+      });
     },
     []
   );
 
   React.useEffect(() => {
-    const observer = new IntersectionObserver(callback, observerOptions);
+    const observer = new IntersectionObserver(
+      updateVisibleSections,
+      observerOptions
+    );
     const sectionIds: string[] = [];
+    
     React.Children.forEach(children, (child) => {
       if (!React.isValidElement<MenuItemProps>(child)) return;
 
@@ -77,7 +79,7 @@ export const Menu = ({
       observer.observe(section);
     });
     setAllSections(sectionIds);
-  }, [callback]);
+  }, [updateVisibleSections]);
 
   const onItemClick = React.useCallback((sectionId: string) => {
     onItemActive?.(sectionId);
