@@ -1,5 +1,7 @@
 # React Dynamic Scroll Menu
 
+<img title="a title" alt="Alt text" src="./images/demo.gif">
+
 This is a dynamic menu which indicates which section on the page is currently scrolled into view. It updates automatically on scroll and can scroll sections into view when clicking on a menu item.
 
 ## Setup
