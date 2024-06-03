@@ -1,6 +1,7 @@
 import sass from 'rollup-plugin-sass'
 import typescript from 'rollup-plugin-typescript2'
-
+import resolve from '@rollup/plugin-node-resolve';
+import babel from '@rollup/plugin-babel';
 import pkg from './package.json' with { type: "json" }
 
 export default {
@@ -16,7 +17,9 @@ export default {
     ],
     plugins: [
       sass({ insert: true }),
-      typescript({ objectHashIgnoreUnknownHack: true })
+      typescript({ objectHashIgnoreUnknownHack: true }),
+      resolve(),
+      babel({babelHelpers: 'runtime', exclude: "node_modules/**" })
     ],
     external: ['react', 'react-dom']
   }
