@@ -1,12 +1,13 @@
 {
   "name": "react-dynamic-scroll-menu",
-  "version": "1.0.0",
-  "description": "",
+  "version": "1.0.1",
+  "description": "A simple menu for sections of a single site.",
   "main": "dist/index.js",
   "scripts": {
     "build": "rm -rf dist && rollup -c",
     "start": "rollup -c -w",
     "dev": "vite",
+    "prepublish": "npm run build",
     "cy:run": "cypress run -- --browser chrome --e2e 'cypress/e2e/'",
     "cy:open": "cypress open"
   },
@@ -19,9 +20,14 @@
   "author": "JonasM",
   "type": "module",
   "license": "ISC",
+  "homepage": "https://github.com/JonasMa/react-scroll-menu",
+  "files": [
+    "dist",
+    "src"
+  ],
   "peerDependencies": {
-    "react": ">= 16.8.0 < 2",
-    "react-dom": ">= 16.8.0 < 2"
+    "react": "^16.8.0 || ^17 || ^18",
+    "react-dom": "^16.8.0 || ^17 || ^18"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.6",
@@ -42,5 +48,8 @@
     "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.11"
-  }
+  },
+  "browserslist": [
+    "defaults"
+  ]
 }
