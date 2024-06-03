@@ -1,6 +1,6 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { Menu, MenuItem } from "../index.tsx";
+import { Menu, MenuItem } from "../src/index.tsx";
 
 const testOptions: IntersectionObserverInit = {
   threshold: 0,
