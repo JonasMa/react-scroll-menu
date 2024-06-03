@@ -3,7 +3,7 @@ import { MenuItemProps } from "./menuItem";
 
 const defaultOptions: IntersectionObserverInit = {
   threshold: 0,
-  rootMargin: "-15% 0px -55% 0px",
+  rootMargin: "-25% 0px -55% 0px",
 };
 
 export interface MenuProps {
@@ -13,6 +13,8 @@ export interface MenuProps {
   as?: keyof JSX.IntrinsicElements;
   className?: string;
   onItemActive?: (sectionId: string) => void;
+  // Padding is added on top of elements when scrolling to them. Defauults to 64
+  paddingTop?: number;
 }
 
 export const Menu = ({
@@ -20,8 +22,9 @@ export const Menu = ({
   root = document,
   options = {},
   onItemActive,
-  as = "ul",
+  as = "menu",
   className,
+  paddingTop = 64,
 }: MenuProps) => {
   const observerOptions: IntersectionObserverInit = {
     root,
@@ -29,16 +32,10 @@ export const Menu = ({
     ...options,
   };
 
-  const [visibleSections, setVisibleSections] = React.useState<Set<string>>([]);
+  const [visibleSections, setVisibleSections] = React.useState<Set<string>>(
+    new Set()
+  );
   const [allSections, setAllSections] = React.useState<string[]>([]);
-
-  const updateSections = (add: string[], remove: string[]) => {
-    setVisibleSections((sections) => {
-      add.forEach(sections.add);
-      remove.forEach(sections.delete);
-      return sections;
-    });
-  };
 
   React.useEffect(() => {
     if (visibleSections.size === 0) return;
@@ -48,35 +45,46 @@ export const Menu = ({
     onItemActive?.(visibleSectionsOrdered[0]);
   }, [visibleSections, allSections]);
 
-  const callback: IntersectionObserverCallback = React.useCallback(
+  const updateVisibleSections: IntersectionObserverCallback = React.useCallback(
     (entries) => {
-      const intersectingIds = entries
-        .filter((e) => e.isIntersecting)
-        .map((e) => e.target.id);
-      const notIntersectingIds = entries
-        .filter((e) => !e.isIntersecting)
-        .map((e) => e.target.id);
-      updateSections(intersectingIds, notIntersectingIds);
+      setVisibleSections((oldSections) => {
+        // Clone because state is immutable
+        const newSections = new Set(oldSections);
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            newSections.add(e.target.id);
+          } else {
+            newSections.delete(e.target.id);
+          }
+        });
+        return newSections;
+      });
     },
     []
   );
 
   React.useEffect(() => {
-    const observer = new IntersectionObserver(callback, observerOptions);
-    const sections: string[] = [];
+    const observer = new IntersectionObserver(
+      updateVisibleSections,
+      observerOptions
+    );
+    const sectionIds: string[] = [];
+
     React.Children.forEach(children, (child) => {
       if (!React.isValidElement<MenuItemProps>(child)) return;
 
       const { sectionId } = child.props;
-      sections.push(sectionId);
+      sectionIds.push(sectionId);
       const section = getSectionWithError(sectionId);
       if (!section) {
         return;
       }
       observer.observe(section);
     });
-    setAllSections(sections);
-  }, [callback]);
+    setAllSections(sectionIds);
+
+    return () => {};
+  }, [updateVisibleSections]);
 
   const onItemClick = React.useCallback((sectionId: string) => {
     onItemActive?.(sectionId);
@@ -84,7 +92,7 @@ export const Menu = ({
     if (!section) {
       return;
     }
-    const top = section.offsetTop - 64;
+    const top = section.offsetTop - paddingTop;
     window.scrollTo({ top, behavior: "smooth" });
   }, []);
 
