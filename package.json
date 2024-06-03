@@ -4,14 +4,21 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "build": "rollup -c",
-    "start": "rollup -c -w"
+    "build": "rm -rf dist && rollup -c",
+    "start": "rollup -c -w",
+    "dev": "vite",
+    "cy:run": "cypress run -- --browser chrome --e2e 'cypress/e2e/'",
+    "cy:open": "cypress open"
   },
-  "keywords": ["menu", "scroll", "react", "typescript"],
+  "keywords": [
+    "menu",
+    "scroll",
+    "react",
+    "typescript"
+  ],
   "author": "JonasM",
   "type": "module",
   "license": "ISC",
-  "dependencies": {},
   "peerDependencies": {
     "react": ">= 16.8.0 < 2",
     "react-dom": ">= 16.8.0 < 2"
@@ -24,13 +31,16 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
     "babel-core": "^6.26.3",
     "babel-runtime": "^6.26.0",
+    "cypress": "^13.10.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rollup": "^4.17.2",
     "rollup-plugin-sass": "^1.12.22",
     "rollup-plugin-typescript2": "^0.36.0",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "vite": "^5.2.11"
   }
 }
