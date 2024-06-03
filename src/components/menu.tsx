@@ -2,7 +2,6 @@ import React from "react";
 import { MenuItemProps } from "./menuItem";
 
 const defaultOptions: IntersectionObserverInit = {
-  threshold: 0,
   rootMargin: "-25% 0px -55% 0px",
 };
 
@@ -13,7 +12,6 @@ export interface MenuProps {
   as?: keyof JSX.IntrinsicElements;
   className?: string;
   onItemActive?: (sectionId: string) => void;
-  // Padding is added on top of elements when scrolling to them. Defauults to 64
   paddingTop?: number;
 }
 
@@ -22,7 +20,7 @@ export const Menu = ({
   root = document,
   options = {},
   onItemActive,
-  as = "ul",
+  as = "menu",
   className,
   paddingTop = 64,
 }: MenuProps) => {
