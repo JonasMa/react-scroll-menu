@@ -14,12 +14,7 @@ import React from 'react';
 const defaultOptions = {
     rootMargin: "-25% 0px -55% 0px",
 };
-const Menu = ({ children, root = document, options = {}, onItemActive, as = "menu", className, paddingTop = 64, }) => {
-    const observerOptions = {
-        root,
-        ...defaultOptions,
-        ...options,
-    };
+const Menu = ({ children, root, options = {}, onItemActive, as = "menu", className, paddingTop = 64, }) => {
     const [visibleSections, setVisibleSections] = React.useState(new Set());
     const [allSections, setAllSections] = React.useState([]);
     React.useEffect(() => {
@@ -44,6 +39,11 @@ const Menu = ({ children, root = document, options = {}, onItemActive, as = "men
         });
     }, []);
     React.useEffect(() => {
+        const observerOptions = {
+            root: root || document,
+            ...defaultOptions,
+            ...options,
+        };
         const observer = new IntersectionObserver(updateVisibleSections, observerOptions);
         const sectionIds = [];
         React.Children.forEach(children, (child) => {

@@ -1,7 +1,7 @@
 {
   "name": "react-dynamic-scroll-menu",
-  "version": "1.0.2",
-  "description": "A simple menu for sections of a single site.", 
+  "version": "1.0.3",
+  "description": "A simple menu for sections of a single site.",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
   "types": "./dist/cjs/index.d.ts",

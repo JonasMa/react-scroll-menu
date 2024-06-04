@@ -17,19 +17,13 @@ export interface MenuProps {
 
 export const Menu = ({
   children,
-  root = document,
+  root,
   options = {},
   onItemActive,
   as = "menu",
   className,
   paddingTop = 64,
 }: MenuProps) => {
-  const observerOptions: IntersectionObserverInit = {
-    root,
-    ...defaultOptions,
-    ...options,
-  };
-
   const [visibleSections, setVisibleSections] = React.useState<Set<string>>(
     new Set()
   );
@@ -62,6 +56,11 @@ export const Menu = ({
   );
 
   React.useEffect(() => {
+    const observerOptions: IntersectionObserverInit = {
+      root: root || document,
+      ...defaultOptions,
+      ...options,
+    };
     const observer = new IntersectionObserver(
       updateVisibleSections,
       observerOptions
