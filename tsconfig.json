@@ -10,7 +10,6 @@
     "declaration": true,
     "moduleResolution": "bundler",
     "noEmit": true,
-    "allowImportingTsExtensions": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,

@@ -14,10 +14,9 @@ function ___$insertStyle(css) {
 var React = require('react');
 
 const defaultOptions = {
-    threshold: 0,
     rootMargin: "-25% 0px -55% 0px",
 };
-const Menu = ({ children, root = document, options = {}, onItemActive, as = "ul", className, paddingTop = 64, }) => {
+const Menu = ({ children, root = document, options = {}, onItemActive, as = "menu", className, paddingTop = 64, }) => {
     const observerOptions = {
         root,
         ...defaultOptions,
