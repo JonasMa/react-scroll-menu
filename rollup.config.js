@@ -1,4 +1,3 @@
-import sass from 'rollup-plugin-sass'
 import typescript from 'rollup-plugin-typescript2'
 import resolve from '@rollup/plugin-node-resolve';
 import babel from '@rollup/plugin-babel';
@@ -22,10 +21,9 @@ export default {
       }
     ],
     plugins: [
-      sass({ insert: true }),
-      typescript({ objectHashIgnoreUnknownHack: true }),
+      typescript(),
       resolve(),
       babel({babelHelpers: 'runtime', exclude: "node_modules/**" })
     ],
-    external: ['react', 'react-dom']
+    external: ['react', 'react-dom', 'react/jsx-runtime']
   }

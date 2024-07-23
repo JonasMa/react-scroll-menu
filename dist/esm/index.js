@@ -1,29 +1,19 @@
-function ___$insertStyle(css) {
-    if (!css || typeof window === 'undefined') {
-        return;
-    }
-    const style = document.createElement('style');
-    style.setAttribute('type', 'text/css');
-    style.innerHTML = css;
-    document.head.appendChild(style);
-    return css;
-}
-
-import React from 'react';
+import { jsx } from 'react/jsx-runtime';
+import { useState, useEffect, useCallback, Children, isValidElement, cloneElement } from 'react';
 
 const defaultOptions = {
     rootMargin: "-25% 0px -55% 0px",
 };
-const Menu = ({ children, root, options = {}, onItemActive, as = "menu", className, paddingTop = 64, }) => {
-    const [visibleSections, setVisibleSections] = React.useState(new Set());
-    const [allSections, setAllSections] = React.useState([]);
-    React.useEffect(() => {
+const Menu = ({ children, root, options = {}, onItemActive, className, }) => {
+    const [visibleSections, setVisibleSections] = useState(new Set());
+    const [allSections, setAllSections] = useState([]);
+    useEffect(() => {
         if (visibleSections.size === 0)
             return;
         const visibleSectionsOrdered = allSections.filter((section) => visibleSections.has(section));
         onItemActive?.(visibleSectionsOrdered[0]);
     }, [visibleSections, allSections]);
-    const updateVisibleSections = React.useCallback((entries) => {
+    const updateVisibleSections = useCallback((entries) => {
         setVisibleSections((oldSections) => {
             // Clone because state is immutable
             const newSections = new Set(oldSections);
@@ -38,7 +28,8 @@ const Menu = ({ children, root, options = {}, onItemActive, as = "menu", classNa
             return newSections;
         });
     }, []);
-    React.useEffect(() => {
+    // Get all section ids from children and setup intersection observer
+    useEffect(() => {
         const observerOptions = {
             root: root || document,
             ...defaultOptions,
@@ -46,8 +37,8 @@ const Menu = ({ children, root, options = {}, onItemActive, as = "menu", classNa
         };
         const observer = new IntersectionObserver(updateVisibleSections, observerOptions);
         const sectionIds = [];
-        React.Children.forEach(children, (child) => {
-            if (!React.isValidElement(child))
+        Children.forEach(children, (child) => {
+            if (!isValidElement(child))
                 return;
             const { sectionId } = child.props;
             sectionIds.push(sectionId);
@@ -59,25 +50,16 @@ const Menu = ({ children, root, options = {}, onItemActive, as = "menu", classNa
         });
         setAllSections(sectionIds);
         return () => { };
-    }, [updateVisibleSections]);
-    const onItemClick = React.useCallback((sectionId) => {
-        onItemActive?.(sectionId);
-        const section = getSectionWithError(sectionId);
-        if (!section) {
-            return;
-        }
-        const top = section.offsetTop - paddingTop;
-        window.scrollTo({ top, behavior: "smooth" });
     }, []);
-    const childrenWithClickListener = React.Children.map(children, (child) => {
-        if (React.isValidElement(child)) {
-            return React.cloneElement(child, {
-                onItemClick: () => onItemClick(child.props.sectionId),
+    const childrenWithClickListener = Children.map(children, (child) => {
+        if (isValidElement(child)) {
+            return cloneElement(child, {
+                onItemClick: () => onItemActive?.(child.props.sectionId),
             });
         }
         return child;
     });
-    return React.createElement(as, { className }, childrenWithClickListener);
+    return (jsx("nav", { className: className, children: jsx("ul", { children: childrenWithClickListener }) }));
 };
 function getSectionWithError(sectionId) {
     const section = document.getElementById(sectionId);
@@ -87,8 +69,8 @@ function getSectionWithError(sectionId) {
     return section;
 }
 
-const MenuItem = ({ children, onItemClick, as = "li", className, }) => {
-    return React.createElement(as, { className, onClick: onItemClick }, children);
+const MenuItem = ({ children, className = "", sectionId, onItemClick, }) => {
+    return (jsx("li", { className: className, onClick: () => onItemClick?.(), children: jsx("a", { href: `#${sectionId}`, children: children }) }));
 };
 
 export { Menu, MenuItem };

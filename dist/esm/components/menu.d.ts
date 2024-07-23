@@ -1,6 +1,6 @@
-import React from "react";
+import { ReactNode } from "react";
 export interface MenuProps {
-    children: React.ReactNode;
+    children: ReactNode;
     root?: Element | Document;
     options?: IntersectionObserverInit;
     as?: keyof JSX.IntrinsicElements;
@@ -8,6 +8,4 @@ export interface MenuProps {
     onItemActive?: (sectionId: string) => void;
     paddingTop?: number;
 }
-export declare const Menu: ({ children, root, options, onItemActive, as, className, paddingTop, }: MenuProps) => React.ReactElement<{
-    className: string | undefined;
-}, string | React.JSXElementConstructor<any>>;
+export declare const Menu: ({ children, root, options, onItemActive, className, }: MenuProps) => import("react/jsx-runtime").JSX.Element;

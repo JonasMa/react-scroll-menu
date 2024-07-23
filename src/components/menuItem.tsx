@@ -1,18 +1,21 @@
-import React from "react";
+import { FC, ReactNode } from "react";
 
 export interface MenuItemProps {
   sectionId: string;
-  children: React.ReactNode;
+  children: ReactNode;
   onItemClick?: () => void;
-  as?: keyof JSX.IntrinsicElements;
   className?: string;
 }
 
-export const MenuItem: React.FC<MenuItemProps> = ({
+export const MenuItem: FC<MenuItemProps> = ({
   children,
+  className = "",
+  sectionId,
   onItemClick,
-  as = "li",
-  className,
 }) => {
-  return React.createElement(as, { className, onClick: onItemClick }, children);
+  return (
+    <li className={className} onClick={() => onItemClick?.()}>
+      <a href={`#${sectionId}`}>{children}</a>
+    </li>
+  );
 };

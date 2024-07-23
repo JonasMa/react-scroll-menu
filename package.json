@@ -1,6 +1,6 @@
 {
   "name": "react-dynamic-scroll-menu",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "A simple menu for sections of a single site.",
   "main": "./dist/cjs/index.js",
   "module": "./dist/esm/index.js",
@@ -35,8 +35,8 @@
     "src"
   ],
   "peerDependencies": {
-    "react": "^16.8.0 || ^17 || ^18",
-    "react-dom": "^16.8.0 || ^17 || ^18"
+    "react": "^17 || ^18",
+    "react-dom": "^17 || ^18"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.24.6",
@@ -44,7 +44,7 @@
     "@babel/preset-typescript": "^7.24.6",
     "@rollup/plugin-babel": "^6.0.4",
     "@rollup/plugin-node-resolve": "^15.2.3",
-    "@types/react": "^18.3.2",
+    "@types/react": "^18.3.1",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.0",
     "babel-core": "^6.26.3",
@@ -53,7 +53,6 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "rollup": "^4.17.2",
-    "rollup-plugin-sass": "^1.12.22",
     "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.4.5",
     "vite": "^5.2.11"

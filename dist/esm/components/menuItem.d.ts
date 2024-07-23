@@ -1,9 +1,8 @@
-import React from "react";
+import { FC, ReactNode } from "react";
 export interface MenuItemProps {
     sectionId: string;
-    children: React.ReactNode;
+    children: ReactNode;
     onItemClick?: () => void;
-    as?: keyof JSX.IntrinsicElements;
     className?: string;
 }
-export declare const MenuItem: React.FC<MenuItemProps>;
+export declare const MenuItem: FC<MenuItemProps>;
